@@ -30,8 +30,7 @@ import {
 
 import type { StaffOrder } from "@/types";
 
-
-import { createPayment } from "@/api/payment";
+import { createPayment } from "@/payment/api";
 
 export default function CustomerPage() {
   const { tableNumber, setTableNumber } = useTableNumber();
@@ -271,7 +270,11 @@ export default function CustomerPage() {
 <button
     onClick={async () => {
 
-        const payment = await createPayment();
+        const payment = await createPayment(
+          5,                                  // TEMP TEMP TEMP TEMP TEMP REPLACE WITH REAL VARIABLES
+          ["order1"],                         // TEMP TEMP TEMP TEMP TEMP REPLACE WITH REAL VARIABLES
+          125000                              // TEMP TEMP TEMP TEMP TEMP REPLACE WITH REAL VARIABLES
+        );
 
         console.log(payment);
 
