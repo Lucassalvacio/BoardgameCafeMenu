@@ -12,7 +12,7 @@ export function Header({ tableNumber, onSetTable }: HeaderProps) {
     <header className="header">
       <div className="brandrow">
         <div className="brand">
-          <div className="mark">Meeple &amp; Mug</div>
+          <div className="mark">Rizky's DuFun</div>
           <div className="tag">Board Game Café · Table Service</div>
         </div>
         <div className="die-badge">
