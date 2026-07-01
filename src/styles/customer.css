@@ -339,7 +339,7 @@
 
     scrollbar-width:none;
 
-    padding: 14px 0;
+    padding: 14px 8px;
 
     position:sticky;
 
@@ -357,7 +357,7 @@
 
     border-radius: 0 0 18px 18px;
 
-    box-shadow:var(--shadow);
+    box-shadow: 0px 8px 6px -6px rgba(0, 0, 0, 0.3);
 }
 
 .cats::-webkit-scrollbar{
@@ -1422,5 +1422,128 @@ textarea{
         font-size:1.6rem;
 
     }
+
+}
+
+.game-availability{
+
+    display:inline-flex;
+    align-items:center;
+
+    margin-top:8px;
+
+    font-size:.85rem;
+
+    font-weight:600;
+
+}
+
+.game-availability.available{
+
+    color:#16a34a;
+
+}
+
+.game-availability.unavailable{
+
+    color:#dc2626;
+
+}
+
+.order-game-btn:disabled{
+
+    opacity:.6;
+
+    cursor:not-allowed;
+
+}
+
+.call-staff-container{
+
+    display:flex;
+
+    justify-content:center;
+
+    margin:18px 0;
+
+}
+
+.call-staff-btn{
+
+    background:#f59e0b;
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:12px 24px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.call-staff-btn:hover{
+
+    background:#d97706;
+
+}
+
+.call-staff-btn:disabled{
+
+    opacity:.7;
+
+    cursor:not-allowed;
+
+}
+
+.header-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+.call-staff-header-btn{
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:10px 16px;
+
+    background:#f59e0b;
+
+    color:white;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+    white-space:nowrap;
+
+}
+
+.call-staff-header-btn:hover{
+
+    background:#d97706;
+
+}
+
+.call-staff-header-btn:disabled{
+
+    opacity:.75;
+
+    cursor:not-allowed;
 
 }

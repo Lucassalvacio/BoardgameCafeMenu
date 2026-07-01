@@ -10,19 +10,28 @@ export interface MenuCategory {
   items: MenuItem[];
 }
 
-export type GameDifficulty = 'Easy' | 'Medium' | 'Hard';
+export type GameDifficulty = "Easy" | "Medium" | "Hard";
 
 export interface BoardGame {
   id: string;
   name: string;
+
   players: string;
   time: string;
   difficulty: GameDifficulty;
+
   desc: string;
+
   manualSteps: string[];
+
+  // ---------- New ----------
+  totalCopies: number;
+  inUseCopies: number;
+
+  image?: string;
 }
 
-export type CartEntryType = 'food' | 'game';
+export type CartEntryType = "food" | "game";
 
 export interface CartEntry {
   id: string;
@@ -47,7 +56,7 @@ export interface OrderPayload {
   tax: number;
   total: number;
   note: string;
-  createdAt: string; // ISO timestamp, set client-side, may be overwritten server-side
+  createdAt: string;
 }
 
 export interface OrderConfirmation {
@@ -58,28 +67,45 @@ export interface OrderConfirmation {
 }
 
 export type OrderStatus =
-    | "received"
-    | "preparing"
-    | "served"
-    | "paid";
+  | "received"
+  | "preparing"
+  | "served"
+  | "paid";
 
 export interface StaffOrder extends OrderPayload {
+  id: string;
+
+  status: OrderStatus;
+
+  paid: boolean;
+
+  updatedAt: string;
+
+  receivedAt: string;
+
+  preparingAt: string | null;
+
+  servedAt: string | null;
+
+  paidAt: string | null;
+}
+
+export type StaffCallStatus =
+    | "pending"
+    | "resolved";
+
+export interface StaffCall {
 
     id: string;
 
-    status: OrderStatus;
+    tableNumber: number;
 
-    paid: boolean;
+    reason: string;
 
-    updatedAt: string;
+    status: StaffCallStatus;
 
-    receivedAt: string;
+    createdAt: string;
 
-    preparingAt: string | null;
-
-    servedAt: string | null;
-
-    paidAt: string | null;
+    resolvedAt: string | null;
 
 }
-

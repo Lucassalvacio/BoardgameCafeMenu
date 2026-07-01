@@ -69,7 +69,9 @@ export const mockGames: BoardGame[] = [
   {
     id: 'gm1', name: 'Uno', players: '2–10', time: '15–30 min', difficulty: 'Easy',
     desc: 'A fast card-matching game by color and number, with action cards that reverse turns, skip players, or force a draw.',
-    manualSteps: [
+    totalCopies: 3,
+inUseCopies: 0,
+manualSteps: [
       'Deal 7 cards to each player; the rest forms a draw pile, with one card flipped to start the discard pile.',
       'On your turn, play a card that matches the top card by color or number, or play a wild card.',
       'Special cards (Skip, Reverse, Draw Two, Wild Draw Four) change turn order or force opponents to draw cards.',
@@ -79,7 +81,9 @@ export const mockGames: BoardGame[] = [
   {
     id: 'gm2', name: 'Monopoly', players: '2–6', time: '60–120 min', difficulty: 'Medium',
     desc: 'A property-trading classic. Buy streets, build houses and hotels, and try to bankrupt the other players.',
-    manualSteps: [
+    totalCopies: 3,
+inUseCopies: 0,
+manualSteps: [
       'Players take turns rolling dice and moving around the board, buying unowned properties they land on.',
       'Landing on an owned property means paying rent to its owner, which increases with houses and hotels.',
       'Collect a full color set to build houses, then upgrade to hotels for higher rent.',
@@ -89,7 +93,9 @@ export const mockGames: BoardGame[] = [
   {
     id: 'gm3', name: 'Catan', players: '3–4', time: '60–90 min', difficulty: 'Medium',
     desc: 'A resource-trading and settlement-building game on a modular hexagonal island.',
-    manualSteps: [
+    totalCopies: 3,
+inUseCopies: 0,
+manualSteps: [
       'Each turn, dice are rolled to determine which hexes produce resources for adjacent settlements.',
       'Use resources to build roads, settlements, and cities, or trade with other players and the bank.',
       'Settlements and cities earn victory points, as do certain development cards and achievements.',
@@ -99,7 +105,9 @@ export const mockGames: BoardGame[] = [
   {
     id: 'gm4', name: 'Codenames', players: '4–8', time: '15–30 min', difficulty: 'Easy',
     desc: 'A team word-association game where spymasters give one-word clues to help teammates guess their agents.',
-    manualSteps: [
+    totalCopies: 3,
+inUseCopies: 0,
+manualSteps: [
       'Split into two teams, each with a spymaster who can see a hidden key to 25 word cards on the table.',
       'The spymaster gives a one-word clue and a number, hinting at multiple words belonging to their team.',
       'Teammates discuss and point to words they think match the clue, revealing what they are.',
@@ -109,7 +117,9 @@ export const mockGames: BoardGame[] = [
   {
     id: 'gm5', name: 'Werewolf', players: '6–18', time: '20–40 min', difficulty: 'Medium',
     desc: "A social deduction party game where villagers try to identify hidden werewolves before it's too late.",
-    manualSteps: [
+    totalCopies: 3,
+inUseCopies: 0,
+manualSteps: [
       'A moderator secretly assigns roles such as Werewolf, Villager, and Seer, often using cards.',
       'During the "night" phase, players close their eyes while werewolves silently choose a victim.',
       'During the "day" phase, everyone discusses and votes to eliminate one suspected werewolf.',
@@ -119,7 +129,9 @@ export const mockGames: BoardGame[] = [
   {
     id: 'gm6', name: 'Jenga', players: '1+', time: '10–20 min', difficulty: 'Easy',
     desc: 'A physical balance game where players remove wooden blocks from a tower and stack them on top.',
-    manualSteps: [
+    totalCopies: 3,
+inUseCopies: 0,
+manualSteps: [
       'Build the tower by stacking 54 wooden blocks in alternating layers of three.',
       'On your turn, remove one block from anywhere below the top complete layer, using only one hand.',
       'Place the removed block on top of the tower to extend it.',
@@ -129,7 +141,9 @@ export const mockGames: BoardGame[] = [
   {
     id: 'gm7', name: 'Dixit', players: '3–6', time: '30 min', difficulty: 'Easy',
     desc: 'A storytelling card game with dreamlike illustrations, guessing whose card matches a given clue.',
-    manualSteps: [
+    totalCopies: 3,
+inUseCopies: 0,
+manualSteps: [
       'Each round, one player (the storyteller) picks a card and gives a word, phrase, or sound describing it without showing it.',
       'Other players each submit a card from their hand that could also fit the clue.',
       "All submitted cards are shuffled and revealed; players vote on which one was the storyteller's.",
@@ -139,7 +153,9 @@ export const mockGames: BoardGame[] = [
   {
     id: 'gm8', name: 'Splendor', players: '2–4', time: '30 min', difficulty: 'Medium',
     desc: 'A gem-collecting engine-building game where players acquire mines and merchants to attract nobles.',
-    manualSteps: [
+    totalCopies: 3,
+inUseCopies: 0,
+manualSteps: [
       'Collect gem tokens and use them to purchase development cards, which provide permanent gem bonuses.',
       'Cheaper cards make later, more expensive cards easier to afford, creating a snowball effect.',
       'Accumulate enough permanent bonuses to attract noble tiles, which award bonus points.',
@@ -149,7 +165,9 @@ export const mockGames: BoardGame[] = [
   {
     id: 'gm9', name: 'Carcassonne', players: '2–5', time: '35–45 min', difficulty: 'Medium',
     desc: 'A tile-laying game where players build a medieval landscape of cities, roads, and fields.',
-    manualSteps: [
+    totalCopies: 3,
+inUseCopies: 0,
+manualSteps: [
       'On your turn, draw and place a tile so its edges connect logically to tiles already on the board.',
       'Optionally place one of your meeples on the new tile to claim a city, road, field, or monastery.',
       'Completed features score points immediately and return the meeple to your hand.',
@@ -159,7 +177,9 @@ export const mockGames: BoardGame[] = [
   {
     id: 'gm10', name: 'Exploding Kittens', players: '2–5', time: '15 min', difficulty: 'Easy',
     desc: "A quick, silly card game of bluffing and luck, where drawing the wrong card can end your game.",
-    manualSteps: [
+    totalCopies: 3,
+inUseCopies: 0,
+manualSteps: [
       'Players take turns drawing cards, trying to avoid drawing an Exploding Kitten card.',
       'Action cards let you skip your turn, peek at the deck, or force another player to draw twice.',
       'A Defuse card lets you survive an Exploding Kitten by secretly placing it back in the deck.',

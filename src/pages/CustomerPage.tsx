@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import type { MenuCategory, BoardGame, OrderPayload } from '@/types';
-import { fetchMenu, fetchGames, placeOrder } from '@/api/client';
+import {
+  fetchMenu,
+  subscribeGames,
+  placeOrder,
+  callStaff,
+  subscribePendingStaffCall,
+} from "@/api/client";
 import { useTableNumber } from '@/hooks/useTableNumber';
 import { useCart } from '@/hooks/useCart';
 import { Header } from '@/components/Header';
@@ -45,28 +51,55 @@ export default function CustomerPage() {
       useState<StaffOrder[]>([]);
   const [orderId, setOrderId] = useState('');
 
-
+  const [callingStaff, setCallingStaff] = useState(false);
+  const [staffCalled, setStaffCalled] = useState(false);
   useEffect(() => {
+
     let cancelled = false;
+
     setLoading(true);
-    Promise.all([fetchMenu(), fetchGames()])
-      .then(([menuData, gamesData]) => {
+
+    fetchMenu()
+        .then(menuData => {
+
+            if (cancelled) return;
+
+            setMenu(menuData);
+
+        })
+        .catch(err => {
+
+            if (cancelled) return;
+
+            setLoadError(
+                err instanceof Error
+                    ? err.message
+                    : "Failed to load menu."
+            );
+
+        });
+
+    const unsubscribeGames = subscribeGames(games => {
+
         if (cancelled) return;
-        setMenu(menuData);
-        setGames(gamesData);
+
+        setGames(games);
+
+        setLoading(false);
+
         setLoadError(null);
-      })
-      .catch((err) => {
-        if (cancelled) return;
-        setLoadError(err instanceof Error ? err.message : 'Failed to load menu.');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+
+    });
+
     return () => {
-      cancelled = true;
+
+        cancelled = true;
+
+        unsubscribeGames();
+
     };
-  }, []);
+
+}, []);
 
   useEffect(() => {
 
@@ -116,6 +149,26 @@ export default function CustomerPage() {
 
   }, [tableNumber]);
 
+  useEffect(() => {
+
+    if (!tableNumber) return;
+
+    const unsubscribe = subscribePendingStaffCall(
+
+        tableNumber,
+
+        pending => {
+
+            setStaffCalled(pending);
+
+        }
+
+    );
+
+    return unsubscribe;
+
+}, [tableNumber]);
+
   const currentBill = customerOrders
     .filter(order => !order.paid)
     .reduce(
@@ -148,6 +201,34 @@ export default function CustomerPage() {
     }
   }
 
+  async function handleCallStaff() {
+
+    if (!tableNumber) return;
+
+    try {
+
+        setCallingStaff(true);
+
+        await callStaff(tableNumber);
+
+    }
+
+    catch (err) {
+
+        console.error(err);
+
+        alert("Unable to call staff.");
+
+    }
+
+    finally {
+
+        setCallingStaff(false);
+
+    }
+
+}
+
   function handleNewOrder() {
     cart.clear();
     setNote('');
@@ -156,12 +237,20 @@ export default function CustomerPage() {
 
   return (
     <>
-      <Header tableNumber={tableNumber} onSetTable={setTableNumber} />
+      <Header
+    tableNumber={tableNumber}
+    onSetTable={setTableNumber}
+
+    callingStaff={callingStaff}
+    staffCalled={staffCalled}
+    onCallStaff={handleCallStaff}
+/>
       <CustomerOrderStatus
         orders={customerOrders.filter(
             order => order.status !== "paid"
         )}
       />
+
       <div className="customer-bill">
           <h3>
               Current Bill
@@ -171,6 +260,11 @@ export default function CustomerPage() {
           </h2>
       </div>
 
+      <div className="call-staff-container">
+
+
+
+</div>
       
 
       <TabBar active={activeTab} onChange={setActiveTab} />
@@ -197,6 +291,7 @@ export default function CustomerPage() {
           <GameLibrary
             games={games}
             cart={cart.cart}
+            customerOrders={customerOrders}
             onToggleGame={cart.toggleGame}
             onViewManual={setManualGame}
           />

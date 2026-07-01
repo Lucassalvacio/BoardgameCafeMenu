@@ -3,17 +3,21 @@ import type {
   BoardGame,
   OrderPayload,
   OrderConfirmation,
+  StaffCall 
 } from '../types';
 import { mockMenu, mockGames } from './mockData';
 
 import {
   collection,
   getDocs,
-  getDoc,
   addDoc,
   doc,
   onSnapshot,
-  setDoc
+  setDoc,
+  runTransaction,
+  updateDoc,
+  query,
+  where
 } from "firebase/firestore";
 
 import { db } from "./firebase";
@@ -34,13 +38,37 @@ export async function seedDatabase() {
   }
 }
 
-export function subscribeGames(callback:  (games: BoardGame[]) => void) {
+export function subscribeGames(
+  callback: (games: BoardGame[]) => void
+) {
+
   return onSnapshot(
       collection(db, "games"),
       snapshot => {
-          callback(snapshot.docs.map(d => d.data() as BoardGame));
+
+          const games = snapshot.docs.map(doc => {
+
+              const data = doc.data();
+
+              return {
+
+                  id: doc.id,
+
+                  ...data,
+
+                  totalCopies: data.totalCopies ?? 1,
+
+                  inUseCopies: data.inUseCopies ?? 0,
+
+              } as BoardGame;
+
+          });
+
+          callback(games);
+
       }
   );
+
 }
 
 /** GET /menu — returns the full menu, grouped by category. */
@@ -55,50 +83,95 @@ export async function fetchMenu(): Promise<MenuCategory[]> {
 /** GET /games — returns the board game library, including manual steps. */
 export async function fetchGames(): Promise<BoardGame[]> {
 
-  const snapshot = await getDocs(
-      collection(db, "games")
-  );
+  const snapshot = await getDocs(collection(db, "games"));
 
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...(doc.data() as Omit<BoardGame, "id">)
-}));
+  return snapshot.docs.map(doc => {
+
+      const data = doc.data();
+
+      return {
+
+          id: doc.id,
+
+          ...data,
+
+          totalCopies: data.totalCopies ?? 1,
+
+          inUseCopies: data.inUseCopies ?? 0,
+
+      } as BoardGame;
+
+  });
+
 }
-
 export async function placeOrder(
   payload: OrderPayload
 ): Promise<OrderConfirmation> {
 
-  const order = {
+  const orderRef = doc(collection(db, "orders"));
 
-      ...payload,
+  await runTransaction(db, async (transaction) => {
 
-      status: "received",
+      // Reserve every requested board game
+      for (const item of payload.items) {
 
-      paid: false,
+          if (item.type !== "game") continue;
 
-      createdAt: new Date().toISOString(),
+          const gameRef = doc(db, "games", item.id);
 
-      updatedAt: new Date().toISOString(),
+          const gameSnap = await transaction.get(gameRef);
 
-      receivedAt: new Date().toISOString(),
+          if (!gameSnap.exists()) {
+              throw new Error(`Game "${item.name}" not found.`);
+          }
 
-      preparingAt: null,
+          const game = gameSnap.data() as BoardGame;
 
-      servedAt: null,
+          const totalCopies = game.totalCopies ?? 1;
+          const inUseCopies = game.inUseCopies ?? 0;
 
-      paidAt: null
+          // Enough copies available?
+          if (inUseCopies + item.qty > totalCopies) {
+              throw new Error(
+                  `"${item.name}" is currently unavailable.`
+              );
+          }
 
-  };
+          transaction.update(gameRef, {
+              inUseCopies: inUseCopies + item.qty
+          });
 
-  const ref = await addDoc(
-      collection(db, "orders"),
-      order
-  );
+      }
+
+      const now = new Date().toISOString();
+
+      transaction.set(orderRef, {
+
+          ...payload,
+
+          status: "received",
+
+          paid: false,
+
+          createdAt: now,
+
+          updatedAt: now,
+
+          receivedAt: now,
+
+          preparingAt: null,
+
+          servedAt: null,
+
+          paidAt: null
+
+      });
+
+  });
 
   return {
 
-      orderId: ref.id,
+      orderId: orderRef.id,
 
       status: "received",
 
@@ -107,15 +180,162 @@ export async function placeOrder(
   };
 
 }
+export async function assignGame(gameId: string) {
 
-export async function validateTable(tableNumber: number) {
+  const gameRef = doc(db, "games", gameId);
 
-  const snap = await getDoc(
-      doc(db, "tables", tableNumber.toString())
+  await runTransaction(db, async transaction => {
+
+      const snap = await transaction.get(gameRef);
+
+      if (!snap.exists()) {
+          throw new Error("Game not found.");
+      }
+
+      const game = snap.data() as BoardGame;
+
+      const totalCopies = game.totalCopies ?? 1;
+      const inUseCopies = game.inUseCopies ?? 0;
+
+      if (inUseCopies >= totalCopies) {
+          throw new Error("No copies available.");
+      }
+
+      transaction.update(gameRef, {
+          inUseCopies: inUseCopies + 1
+      });
+
+  });
+
+}
+
+export async function returnGame(
+  gameId: string,
+  qty: number = 1
+) {
+
+  const gameRef = doc(db, "games", gameId);
+
+  await runTransaction(db, async (transaction) => {
+
+      const snap = await transaction.get(gameRef);
+
+      if (!snap.exists()) {
+          throw new Error("Game not found.");
+      }
+
+      const game = snap.data() as BoardGame;
+
+      const inUseCopies = game.inUseCopies ?? 0;
+
+      transaction.update(gameRef, {
+          inUseCopies: Math.max(0, inUseCopies - qty)
+      });
+
+  });
+
+}
+
+export async function callStaff(
+  tableNumber: number,
+  reason = "Need Assistance"
+) {
+
+  await addDoc(
+
+      collection(db, "staffCalls"),
+
+      {
+
+          tableNumber,
+
+          reason,
+
+          status: "pending",
+
+          createdAt: new Date().toISOString(),
+
+          resolvedAt: null,
+
+      }
+
   );
 
-  return {
-      valid: snap.exists()
-  };
+}
+
+export function subscribeStaffCalls(
+
+  callback: (calls: StaffCall[]) => void
+
+) {
+
+  return onSnapshot(
+
+      collection(db, "staffCalls"),
+
+      snapshot => {
+
+          const calls = snapshot.docs.map(doc => ({
+
+              id: doc.id,
+
+              ...doc.data()
+
+          })) as StaffCall[];
+
+          callback(calls);
+
+      }
+
+  );
+
+}
+
+export async function resolveStaffCall(
+
+  id: string
+
+) {
+
+  await updateDoc(
+
+      doc(db, "staffCalls", id),
+
+      {
+
+          status: "resolved",
+
+          resolvedAt: new Date().toISOString()
+
+      }
+
+  );
+
+}
+
+export function subscribePendingStaffCall(
+  tableNumber: number,
+  callback: (hasPending: boolean) => void
+) {
+
+  return onSnapshot(
+
+      query(
+
+          collection(db, "staffCalls"),
+
+          where("tableNumber", "==", tableNumber),
+
+          where("status", "==", "pending")
+
+      ),
+
+      snapshot => {
+
+          callback(!snapshot.empty);
+
+      }
+
+  );
 
 }
