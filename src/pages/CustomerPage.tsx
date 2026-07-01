@@ -30,8 +30,6 @@ import {
 
 import type { StaffOrder } from "@/types";
 
-import { createPayment } from "@/payment/api";
-
 export default function CustomerPage() {
   const { tableNumber, setTableNumber } = useTableNumber();
 
