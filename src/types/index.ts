@@ -90,6 +90,40 @@ export interface StaffOrder extends OrderPayload {
   paidAt: string | null;
 }
 
+export type PaymentStatus =
+    | "pending"
+    | "paid"
+    | "expired"
+    | "cancelled";
+
+export interface Payment {
+
+    id: string;
+
+    paymentId: string;
+
+    tableNumber: number;
+
+    orderIds: string[];
+
+    amount: number;
+
+    provider: "mock" | "midtrans";
+
+    status: PaymentStatus;
+
+    qrType: "image" | "string";
+
+    qrData: string;
+
+    createdAt: string;
+
+    expiresAt: string;
+
+    paidAt: string | null;
+
+}
+
 export type StaffCallStatus =
     | "pending"
     | "resolved";
