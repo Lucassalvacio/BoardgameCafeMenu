@@ -266,30 +266,7 @@ export default function CustomerPage() {
 
 
 </div>
-<button
-  onClick={() => {
-    console.log(import.meta.env.VITE_API_URL);
-  }}
->
-  Test Env
-</button>
-<button
-    onClick={async () => {
 
-        const payment = await createPayment(
-          5,                                  // TEMP TEMP TEMP TEMP TEMP REPLACE WITH REAL VARIABLES
-          ["order1"],                         // TEMP TEMP TEMP TEMP TEMP REPLACE WITH REAL VARIABLES
-          125000                              // TEMP TEMP TEMP TEMP TEMP REPLACE WITH REAL VARIABLES
-        );
-
-        console.log(payment);
-
-        alert(JSON.stringify(payment, null, 2));
-
-    }}
->
-    Test Payment API
-</button>
       <TabBar active={activeTab} onChange={setActiveTab} />
 
       {activeTab === 'menu' && <CategoryNav categories={menu} />}
