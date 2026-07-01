@@ -26,16 +26,6 @@ export default function App() {
                 }
             />
 
-            {/* Staff Dashboard */}
-            <Route
-                path="/staff/dashboard"
-                element={
-                    <div style={{ padding: 40 }}>
-                        Staff Dashboard (Coming Next)
-                    </div>
-                }
-            />
-
             {/* Unknown URL */}
             <Route
                 path="*"
