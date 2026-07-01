@@ -56,3 +56,30 @@ export interface OrderConfirmation {
   tableNumber: number;
   estimatedMinutes?: number;
 }
+
+export type OrderStatus =
+    | "received"
+    | "preparing"
+    | "served"
+    | "paid";
+
+export interface StaffOrder extends OrderPayload {
+
+    id: string;
+
+    status: OrderStatus;
+
+    paid: boolean;
+
+    updatedAt: string;
+
+    receivedAt: string;
+
+    preparingAt: string | null;
+
+    servedAt: string | null;
+
+    paidAt: string | null;
+
+}
+

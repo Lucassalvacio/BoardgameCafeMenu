@@ -68,15 +68,42 @@ export async function fetchGames(): Promise<BoardGame[]> {
 export async function placeOrder(
   payload: OrderPayload
 ): Promise<OrderConfirmation> {
+
+  const order = {
+
+      ...payload,
+
+      status: "received",
+
+      paid: false,
+
+      createdAt: new Date().toISOString(),
+
+      updatedAt: new Date().toISOString(),
+
+      receivedAt: new Date().toISOString(),
+
+      preparingAt: null,
+
+      servedAt: null,
+
+      paidAt: null
+
+  };
+
   const ref = await addDoc(
       collection(db, "orders"),
-      payload
+      order
   );
 
   return {
+
       orderId: ref.id,
+
       status: "received",
+
       tableNumber: payload.tableNumber
+
   };
 
 }
