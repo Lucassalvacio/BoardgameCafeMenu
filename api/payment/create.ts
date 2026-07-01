@@ -56,7 +56,7 @@ export default async function handler(
 
         qrType: "image",
 
-        qrData: "/qris-demo.png",
+        qrData: "/QRIS-Test.png",
 
         createdAt:
 
