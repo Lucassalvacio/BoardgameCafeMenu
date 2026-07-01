@@ -31,6 +31,8 @@ import {
 import type { StaffOrder } from "@/types";
 
 
+import { createPayment } from "@/api/payment";
+
 export default function CustomerPage() {
   const { tableNumber, setTableNumber } = useTableNumber();
 
@@ -266,7 +268,19 @@ export default function CustomerPage() {
 
 </div>
       
+<button
+    onClick={async () => {
 
+        const payment = await createPayment();
+
+        console.log(payment);
+
+        alert(JSON.stringify(payment, null, 2));
+
+    }}
+>
+    Test Payment API
+</button>
       <TabBar active={activeTab} onChange={setActiveTab} />
 
       {activeTab === 'menu' && <CategoryNav categories={menu} />}
