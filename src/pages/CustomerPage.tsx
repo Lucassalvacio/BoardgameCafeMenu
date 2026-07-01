@@ -266,7 +266,13 @@ export default function CustomerPage() {
 
 
 </div>
-      
+<button
+  onClick={() => {
+    console.log(import.meta.env.VITE_API_URL);
+  }}
+>
+  Test Env
+</button>
 <button
     onClick={async () => {
 
